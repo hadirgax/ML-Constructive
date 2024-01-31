@@ -1,0 +1,24 @@
+name: mlconstructive
+channels:
+- conda-forge
+dependencies:
+- python=3.8
+- pip==23
+- pip:
+  - numpy==1.21.6
+  - scipy==1.6.2
+  - tqdm==4.59.0
+  - matplotlib==3.3.4
+  - h5py==2.10.0
+  - pandas==1.2.2
+  - seaborn==0.11.1
+  - pyproj==2.6.1.post1
+  - torch==1.7
+  - cython==0.29.23
+  - opencv-python==4.9.0.80
+  - torch-summary==1.4.5
+  - black==23.12.1          #dev
+  - flake8==7.0.0           #dev
+  - isort==5.13.2           #dev
+  - pylint==3.0.3           #dev
+  - ruff==0.1.14            #dev
