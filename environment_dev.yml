@@ -5,8 +5,8 @@ dependencies:
 - python=3.8
 - pip==23
 - pip:
-  - numpy==1.21.6
-  - scipy==1.6.2
+  - numpy==1.23.5
+  - scipy==1.8.1
   - tqdm==4.59.0
   - matplotlib==3.3.4
   - h5py==2.10.0
