@@ -1,7 +1,7 @@
 
 CONDA_ENV_NAME ?= mlconstructive
 
-export PYTHONPATH := $(PWD)/version1:$(PWD):$(PYTHONPATH)
+export PYTHONPATH := $(PWD):$(PWD)/version1:$(PYTHONPATH)
 
 #===== Environment =====
 
@@ -14,15 +14,35 @@ env-remove:
 env-update: env-remove env-create
 
 
+#===== Dependencies =====
+
 install-deps:
 	sudo apt-get update
 	sudo apt-get install libgl1-mesa-glx
-
 
 install-pyconcord:
 	pip install 'pyconcorde @ git+https://github.com/jvkersch/pyconcorde'
 
 
-create_instances:
+#===== CLI ML-Constructive =====
+
+cli-help:
 	echo $(PYTHONPATH)
-	python version1/cli.py --operation create_instances
+	cd version1 && \
+	python cli.py --help
+
+run-create-instances:
+	cd version1 && \
+	python cli.py --operation create_instances
+
+run-statistical-study:
+	cd version1 && \
+	python cli.py --operation statistical_study
+
+run-train:
+	cd version1 && \
+	python cli.py --operation train
+
+run-solve-tsplib:
+	cd version1 && \
+	python cli.py --operation solve_TSPLIB
