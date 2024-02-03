@@ -27,11 +27,17 @@ class GenerateInstances:
     def __init__(self, settings, stats=False):
         self.settings = settings
         if stats:
-            self.range_down = 500
-            self.range_up = 1000
+            #self.range_down = 500
+            #self.range_up = 1000
+            self.range_down = 50
+            self.range_up = 100
+
         else:
-            self.range_down = 100
-            self.range_up = 300
+            #self.range_down = 100
+            #self.range_up = 300
+            self.range_down = 10
+            self.range_up = 30
+
 
     def create_instances(self, num_instances, seed_starting_from):
         data = [self.create_data(j + seed_starting_from) for j in range(num_instances)]
