@@ -58,54 +58,101 @@ and an unusual example on how to combine combinatorial optimization concepts
 with the reward function of reinforcement learning setups for the TSP [4]. 
 
 
+## Running with Conda
 
+To run this application using Conda, follow these steps:
 
+1. **Install Miniconda or Anaconda**: If not already installed, download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution) on your machine.
 
-Dependecies
------
-Python>=3.8.8
+2. **Create and Activate a New Conda Environment**:
+    ```shell
+    conda create --name ml_constructive python=3.8
+    conda activate ml_constructive
+    ```
 
-Pytorch>=1.7
+3. **Install Required Libraries**:
+    - Install PyTorch with CUDA support for GPU acceleration. Ensure the CUDA toolkit version matches your system's NVIDIA drivers.
+        ```shell
+        conda install pytorch torchvision torchaudio cudatoolkit=12.3 -c pytorch
+        ```
+    - The `libgl1-mesa-glx` package is a library that provides support for OpenGL, which is required by some computer vision libraries like OpenCV. While Conda manages most package dependencies within its environment, system-level dependencies like OpenGL libraries might need to be installed separately on your host system. For Conda environments, OpenCV can be installed without explicitly installing `libgl1-mesa-glx` as Conda packages handle these dependencies internally:
+        ```shell
+        conda install -c conda-forge opencv
+        ```
+    - For packages that require a specific installation method or are not available in Conda repositories, use pip within the Conda environment. An example is `pyconcorde`, which is installed via pip:
+        ```shell
+        pip install 'pyconcorde @ git+https://github.com/jvkersch/pyconcorde'
+        ```
+    - To install other dependencies from `requirements.txt` and ensure compatibility within the Conda environment, it's recommended to first attempt installation with Conda, falling back to pip if necessary:
+        ```shell
+        while read requirement; do conda install --yes $requirement || pip install $requirement; done < requirements.txt
+        ```
 
-Cython>=0.29.23
+4. **CUDA Toolkit**: The CUDA Toolkit provides a development environment for creating high performance GPU-accelerated applications. It includes GPU-accelerated libraries, debugging and optimization tools, a C/C++ compiler, and a runtime library to deploy your application. If you're using Conda to manage PyTorch and other GPU-accelerated libraries, Conda will install the appropriate version of `cudatoolkit` for you. However, to leverage GPU capabilities fully, ensure that your system's NVIDIA drivers are compatible with the installed CUDA version. For detailed instructions on installing CUDA and matching it with your NVIDIA drivers, visit the [NVIDIA CUDA Toolkit documentation](https://developer.nvidia.com/cuda-downloads).
 
-git+git://github.com/jvkersch/pyconcorde.git
+After setting up your Conda environment and installing the necessary libraries, you can proceed with the project-specific commands such as dataset creation, model training, and evaluation within the activated Conda environment.
 
-H5py>=2.10.0
+## Running with Docker
 
-Numpy>=1.20.2
+Running this repository with Docker simplifies the setup process and ensures a consistent environment across different machines. Follow the instructions below to get started:
 
-Pandas>=1.2.2
+### Prerequisites
 
-Scipy>=1.6.2
+- **Docker Installation:** Ensure Docker is installed and running on your system. If not, download and install Docker from [Docker's official website](https://www.docker.com/get-started).
 
-Matplotlib>=3.3.4
+### Pulling the Docker Image
 
-Tqdm>=4.59.0
+The Docker images for this project are hosted on Docker Hub. You can choose between the standard version or the GPU-accelerated version if you plan to utilize GPUs for training the model.
 
-and others, please refer to requirements.txt for additional information.
+- **Standard Version:**
 
-How to install?
-------
+  To pull the latest version of the `umbertojr/ml-constructive` image, execute the following command in your terminal:
 
-```shell
-git clone https://github.com/UmbertoJr/ML-Constructive.git
-cd ML-greedy/version1/
-```
+  ```shell
+  docker pull umbertojr/ml-constructive:latest
+  ```
 
+  This command retrieves the latest image, ensuring you have the most up-to-date environment for the project. For more details about this image, visit the Docker Hub repository.
 
-Dataset creation
-------
-The data creation it takes about 3 days.
-After installing [Pyconcorde](https://github.com/jvkersch/pyconcorde) 
-and the other dependencies correctly.
-The folders and files containing the data for training 
-and evaluation will be created with the following command. 
-The Test instances are already located in the folder "version1/data/test".
+- **GPU Version:**
+  If you intend to train the model using GPUs, pull the GPU-enabled image with:
+  ```shell
+  docker pull umbertojr/ml-constructive:gpu
+  ```
+    This version is optimized for GPU utilization, enabling faster training times on supported hardware.
+
+### Running the Docker Image
+
+After pulling your chosen image, you can run it to start an interactive session, allowing direct execution of Python commands within a Bash shell.
+
+- **Standard Environment:**
+    To launch the container with an interactive Bash shell and mount a local directory (to preserve data generated by experiments), use:
+    ```shell
+    docker run -it -v /path/to/local/version1.1/:/app/ umbertojr/ml-constructive:latest bash
+    ```
+    Replace /path/to/local/version1.1/ with the actual path to your ML-Constructive/version1.1/ directory on the host machine. This setup ensures that any data written inside the container to /app/data is saved on your host machine, maintaining the project's structure and facilitating easy access to results and datasets.
+
+- **GPU-Enabled Environment:**
+    If utilizing GPUs, launch the container with GPU support by adding the `--gpus all` flag:
+    ```shell
+    docker run -it --gpus all -v /path/to/local/version1.1/:/app/ umbertojr/ml-constructive:gpu bash
+    ```
+    This command enables the Docker container to access all available GPUs on the host machine, significantly enhancing performance for GPU-accelerated tasks.
+
+By following these steps, you can easily set up and run the application in a Dockerized environment, whether you're conducting experiments on a CPU or leveraging the power of GPUs.
+
+## Replicating Data for Experiments
+### Dataset Creation
+
+To create the dataset, which takes about 3 days. The following command generates folders and files containing the data for training and evaluation. Test instances are already located in the "version1/data/test" folder.
 
 ```shell
 python cli.py --operation create_instances
 ```
+### Saving Data to Local Host
+
+Data generated by the above commands will be automatically saved to the mounted directory (/path/to/local/data) on your host machine. This setup allows you to preserve the data outside of the Docker container, facilitating easy access and analysis.
+
 
 Statistical test
 ----
@@ -170,3 +217,10 @@ ISSN = {1999-4893},
 DOI = {10.3390/a14090267}
 }
 ```
+
+## Acknowledgements
+
+This project makes use of the [PyConcorde](https://github.com/jvkersch/pyconcorde) library, an efficient Python wrapper for the Concorde TSP solver, which is the fastest available exact solver for the Traveling Salesman Problem (TSP). We express our sincere gratitude to the developers of PyConcorde for their efforts in creating and maintaining this valuable tool.
+
+Additionally, we extend our thanks to NVIDIA for providing the Docker images that were instrumental in the development and execution of our GPU-accelerated experiments. The [NVIDIA PyTorch Docker images](https://ngc.nvidia.com/catalog/containers/nvidia:pytorch) (`nvcr.io/nvidia/pytorch`) supplied us with a robust, optimized environment for deep learning applications. Their commitment to supporting the community with high-quality, accessible tools has significantly contributed to the success of our project's computational tasks.
+

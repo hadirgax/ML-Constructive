@@ -6,3 +6,8 @@
 /version1/data/train
 __pycache__/
 .idea/
+*.h5
+./version1.1/data/test/TSPLIB/*.tsp
+*.tsp
+*.npy
+/version1.1/data/net_weights/CL_2/*
